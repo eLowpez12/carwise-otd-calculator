@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarWise Out-the-Door Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <img src="carwise-logo.png" alt="CarWise - Your Personal Car Shoppers" class="logo">
+    <h1>CarWise Out-the-Door Calculator</h1>
+    <div class="calculator">
+        <!-- Basic Fields -->
+        <div class="basic-fields">
+            <div class="form-group">
+                <label for="sellingPrice">Selling Price</label>
+                <input type="text" id="sellingPrice" placeholder="Enter selling price">
+            </div>
+            <div class="form-group">
+                <label for="zipcode">Zipcode</label>
+                <input type="text" 
+                       id="zipcode" 
+                       pattern="[0-9]{5}" 
+                       maxlength="5" 
+                       minlength="5"
+                       inputmode="numeric"
+                       placeholder="Enter 5-digit zipcode"
+                       title="Please enter a valid 5-digit zipcode">
+            </div>
+        </div>
+
+        <!-- Advanced Toggle Button -->
+        <button type="button" id="advancedToggle" class="advanced-toggle">
+            Advanced Options ▼
+        </button>
+
+        <!-- Advanced Fields -->
+        <div id="advancedFields" class="advanced-fields hidden">
+            <div class="form-group">
+                <label for="tradeAllowance">Trade Allowance</label>
+                <input type="text" id="tradeAllowance" placeholder="Enter trade-in value">
+            </div>
+            <div class="form-group">
+                <label for="cashDown">Cash Down</label>
+                <input type="text" id="cashDown" placeholder="Enter cash down">
+            </div>
+            <div class="form-group">
+                <label for="loanTerm">Loan Term</label>
+                <select id="loanTerm">
+                    <option value="">Select term</option>
+                    <option value="36">36 months</option>
+                    <option value="48">48 months</option>
+                    <option value="60">60 months</option>
+                    <option value="72">72 months</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="interestRate">Interest Rate/APR (%)</label>
+                <input type="number" id="interestRate" step="0.1" placeholder="Enter interest rate">
+            </div>
+        </div>
+
+        <button onclick="calculateTotal().catch(error => alert(error.message))" class="calculate-button">Calculate Total</button>
+    </div>
+    <div id="result"></div>
+    <script src="zipcode-data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

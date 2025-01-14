@@ -1,0 +1,237 @@
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.logo {
+    max-width: 300px;
+    margin: 0 auto 20px;
+    display: block; /* Ensure the logo is visible */
+}
+
+h1 {
+    color: #E31837;
+    text-align: center;
+    display: none; /* Hide the text title since we'll use the logo */
+    margin-bottom: 30px;
+}
+
+.calculator {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 30px;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #444;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #E31837;
+    box-shadow: 0 0 0 2px rgba(227, 24, 55, 0.1);
+}
+
+.calculate-button {
+    background-color: #E31837;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    margin-top: 20px;
+    transition: background-color 0.2s;
+}
+
+.calculate-button:hover {
+    background-color: #C41530;
+}
+
+/* Advanced Toggle Styles */
+.advanced-toggle {
+    background: none;
+    border: none;
+    color: #E31837;
+    padding: 10px 0;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    width: 100%;
+    text-align: left;
+    margin: 15px 0;
+    transition: color 0.2s;
+}
+
+.advanced-toggle:hover {
+    color: #C41530;
+}
+
+/* Advanced Fields Container */
+.advanced-fields {
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    max-height: 500px;
+}
+
+.advanced-fields.hidden {
+    max-height: 0;
+}
+
+/* Results Styling */
+#result {
+    margin-top: 30px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.result-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.result-row:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.result-label {
+    font-weight: 500;
+}
+
+.result-value {
+    font-weight: 600;
+    text-align: right;
+}
+
+.total-section {
+    background-color: #f8f9fa;
+    margin: 20px -30px;
+    padding: 20px 30px;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+.total {
+    font-size: 28px;
+    font-weight: bold;
+    color: #E31837;
+    text-align: right;
+}
+
+/* Print Button Styles */
+.print-button {
+    background-color: #E31837;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    display: inline-block;
+    transition: background-color 0.2s;
+}
+
+.print-button:hover {
+    background-color: #C41530;
+}
+
+/* Print Styles */
+@media print {
+    body {
+        padding: 0;
+        margin: 0;
+    }
+
+    .calculator, 
+    .no-print, 
+    .advanced-toggle, 
+    .calculate-button {
+        display: none !important;
+    }
+
+    .print-content {
+        margin: 0;
+        padding: 20px;
+    }
+
+    #result {
+        border: none;
+        padding: 0;
+        margin: 0;
+        box-shadow: none;
+    }
+
+    .result-row {
+        padding: 8px 0;
+    }
+
+    .result-label, .result-value {
+        font-size: 12px;
+    }
+
+    .total-section {
+        background-color: transparent;
+        margin: 10px 0;
+        padding: 10px 0;
+    }
+
+    .total {
+        color: black !important;
+    }
+}
+
+.price-explanation {
+    margin: 20px 0;
+    line-height: 1.6;
+    color: #666;
+    font-size: 14px;
+}
+
+.disclaimer {
+    margin-top: 30px;
+    color: #666;
+    font-size: 12px;
+    font-style: italic;
+    text-align: center;
+}
+
+/* Remove spinners from number inputs */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
+}
