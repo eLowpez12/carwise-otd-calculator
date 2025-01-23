@@ -13,21 +13,79 @@ function formatNumberWithCommas(value) {
     return value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-// Remove comma formatting logic
+// Add to the beginning of the file, after existing utility functions
+function formatInputWithSymbol(input, isPercentage = false) {
+    let value = input.value.replace(/[^0-9.]/g, '');
+    if (value) {
+        if (isPercentage) {
+            // For percentage fields
+            value = value + '%';
+        } else {
+            // For currency fields, first remove commas then format
+            value = value.replace(/,/g, '');
+            value = '$' + formatNumberWithCommas(value);
+        }
+        input.value = value;
+    }
+}
+
+// Update the addCommaFormatting function
 function addCommaFormatting() {
-    const fields = ['sellingPrice', 'tradeAllowance', 'cashDown'];
-    fields.forEach(fieldId => {
+    const currencyFields = ['sellingPrice', 'tradeAllowance', 'cashDown'];
+    currencyFields.forEach(fieldId => {
         const field = document.getElementById(fieldId);
         field.addEventListener('input', (e) => {
-            const value = e.target.value.replace(/,/g, ''); // Remove existing commas
+            let value = e.target.value.replace(/[$,]/g, '');
             if (!isNaN(value) && value !== '') {
-                const formattedValue = formatNumberWithCommas(value);
-                e.target.value = formattedValue;
-                e.target.setSelectionRange(formattedValue.length, formattedValue.length); // Move cursor to end
-            } else {
-                e.target.value = value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+                value = '$' + formatNumberWithCommas(value);
+                e.target.value = value;
             }
         });
+    });
+
+    // Add formatting for interest rate
+    const interestField = document.getElementById('interestRate');
+    let previousValue = '';
+    
+    interestField.addEventListener('input', (e) => {
+        const cursorPosition = e.target.selectionStart;
+        let value = e.target.value.replace(/[^0-9.]/g, '');
+
+        // Handle backspace when cursor is after %
+        if (previousValue.length > value.length && cursorPosition === previousValue.length) {
+            value = value.slice(0, -1);
+        }
+
+        if (!isNaN(value) && value !== '') {
+            // Only allow one decimal point
+            const parts = value.split('.');
+            if (parts.length > 2) {
+                value = parts[0] + '.' + parts.slice(1).join('');
+            }
+            // Limit to 2 decimal places
+            if (parts.length === 2 && parts[1].length > 2) {
+                value = parseFloat(value).toFixed(2);
+            }
+
+            const newValue = value + '%';
+            e.target.value = newValue;
+            
+            // Set cursor position before the %
+            const newPosition = cursorPosition < previousValue.length ? cursorPosition : newValue.length - 1;
+            e.target.setSelectionRange(newPosition, newPosition);
+            
+            previousValue = newValue;
+        } else {
+            e.target.value = value;
+            previousValue = value;
+        }
+    });
+
+    // Handle keyboard navigation
+    interestField.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft' && e.target.selectionStart === e.target.value.length) {
+            e.target.setSelectionRange(e.target.value.length - 1, e.target.value.length - 1);
+        }
     });
 }
 
@@ -43,6 +101,46 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     addCommaFormatting();
+
+    // Setup tooltip functionality
+    const helpIcons = document.querySelectorAll('.help-icon');
+    let activeTooltip = null;
+
+    helpIcons.forEach(icon => {
+        icon.addEventListener('click', function(e) {
+            e.stopPropagation();
+            
+            // Remove any existing tooltips
+            if (activeTooltip) {
+                activeTooltip.remove();
+                if (activeTooltip.parentIcon === icon) {
+                    activeTooltip = null;
+                    return;
+                }
+            }
+
+            // Create and position the tooltip
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+            tooltip.textContent = this.getAttribute('data-tooltip');
+            tooltip.parentIcon = icon;
+            
+            // Append tooltip to the form-group container
+            icon.closest('.form-group').appendChild(tooltip);
+            
+            // Show the tooltip
+            setTimeout(() => tooltip.classList.add('show'), 0);
+            activeTooltip = tooltip;
+        });
+    });
+
+    // Close tooltip when clicking outside
+    document.addEventListener('click', function() {
+        if (activeTooltip) {
+            activeTooltip.remove();
+            activeTooltip = null;
+        }
+    });
 });
 
 // Get fees for a specific state from our stateFees data
@@ -91,7 +189,8 @@ async function getFeesFromZipcode(zipcode) {
                 cityRate: parseFloat(taxData[0].city_rate) * 100,
                 countyRate: parseFloat(taxData[0].county_rate) * 100,
                 additionalRate: parseFloat(taxData[0].additional_rate) * 100
-            }
+            },
+            docFeeTaxable: fees.docFeeTaxable
         };
     } catch (error) {
         console.error('Tax API Error:', error);
@@ -104,24 +203,54 @@ function isValidZipcode(zipcode) {
     return /^\d{5}$/.test(zipcode);
 }
 
+// Add preloader functions
+function showPreloader() {
+    const preloader = document.getElementById('preloader');
+    preloader.classList.add('show');
+}
+
+function hidePreloader() {
+    const preloader = document.getElementById('preloader');
+    preloader.classList.remove('show');
+}
+
 async function calculateTotal() {
-    const sellingPrice = parseFloat(document.getElementById('sellingPrice').value.replace(/,/g, '')) || 0;
-    const zipcode = document.getElementById('zipcode').value;
-    const tradeAllowance = parseFloat(document.getElementById('tradeAllowance').value.replace(/,/g, '')) || 0;
-    const cashDown = parseFloat(document.getElementById('cashDown').value.replace(/,/g, '')) || 0;
-    const loanTerm = document.getElementById('loanTerm').value;
-    const interestRate = parseFloat(document.getElementById('interestRate').value) || 0;
-
-    if (!isValidZipcode(zipcode)) {
-        alert('Please enter a valid 5-digit zipcode');
-        return;
-    }
-
+    const resultDiv = document.getElementById('result');
+    showPreloader();
+    
     try {
-        const fees = await getFeesFromZipcode(zipcode);
-        const { docFee, titleFee, registrationFee, taxRate, state } = fees;
+        // Create a minimum delay of 1 second
+        const minimumDelay = new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Get the values from inputs
+        const sellingPrice = parseFloat(document.getElementById('sellingPrice').value.replace(/[$,]/g, '')) || 0;
+        const zipcode = document.getElementById('zipcode').value;
+        const tradeAllowance = parseFloat(document.getElementById('tradeAllowance').value.replace(/[$,]/g, '')) || 0;
+        const cashDown = parseFloat(document.getElementById('cashDown').value.replace(/[$,]/g, '')) || 0;
+        const loanTerm = document.getElementById('loanTerm').value;
+        const interestRate = parseFloat(document.getElementById('interestRate').value.replace(/[%]/g, '')) || 0;
 
-        const salesTax = (sellingPrice - tradeAllowance) * (taxRate / 100);
+        // Validate inputs
+        if (!sellingPrice || isNaN(sellingPrice)) {
+            throw new Error('Please enter a valid selling price');
+        }
+        
+        if (!isValidZipcode(zipcode)) {
+            throw new Error('Please enter a valid 5-digit zipcode');
+        }
+        
+        // Get fees based on zipcode
+        const fees = await getFeesFromZipcode(zipcode);
+        
+        // Wait for both the fees calculation and minimum delay
+        await Promise.all([minimumDelay, Promise.resolve(fees)]);
+        
+        const { docFee, titleFee, registrationFee, taxRate, state, docFeeTaxable } = fees;
+
+        // Calculate taxable amount based on whether doc fees are taxable in the state
+        const taxableAmount = sellingPrice - tradeAllowance + (docFeeTaxable ? docFee : 0);
+        const salesTax = taxableAmount * (taxRate / 100);
+        
         const totalBeforeTrade = sellingPrice + docFee + salesTax + titleFee + registrationFee;
         const total = totalBeforeTrade - tradeAllowance;
         const increase = totalBeforeTrade - sellingPrice;
@@ -130,6 +259,7 @@ async function calculateTotal() {
         const currentDate = new Date().toLocaleDateString();
         const resultHTML = `
             <div class="print-content">
+                <img src="car-wise-calculator-logo.svg" alt="CarWise Calculator" class="results-logo">
                 <h2>Purchase Details</h2>
                 
                 <div class="result-row">
@@ -141,7 +271,7 @@ async function calculateTotal() {
                     <span class="result-value">${formatCurrency(tradeAllowance)}</span>
                 </div>
                 <div class="result-row">
-                    <span class="result-label">Doc Fee</span>
+                    <span class="result-label">Doc Fee${docFeeTaxable ? ' (Taxable)' : ''}</span>
                     <span class="result-value">${formatCurrency(docFee)}</span>
                 </div>
                 <div class="result-row">
@@ -165,7 +295,7 @@ async function calculateTotal() {
                 </div>
 
                 <p class="price-explanation">
-                    The total out-the-door price of ${formatCurrency(totalBeforeTrade)} (not including your Trade Allowance) is ${formatCurrency(increase)} more than the selling price of ${formatCurrency(sellingPrice)}, representing a ${increasePercentage.toFixed(2)}% increase. With your trade allowance, the total out-the-door is ${formatCurrency(total)}.
+                    The total out-the-door price of ${formatCurrency(totalBeforeTrade)} (not including your Trade Allowance) is <span class="highlight">${formatCurrency(increase)}</span> more than the selling price of ${formatCurrency(sellingPrice)}, representing a <span class="highlight">${increasePercentage.toFixed(2)}%</span> increase. With your trade allowance, the total out-the-door is ${formatCurrency(total)}.
                 </p>
 
                 ${loanTerm ? `
@@ -201,12 +331,19 @@ async function calculateTotal() {
                 ` : ''}
                 <p class="disclaimer">The total out-the-door price and monthly payment are estimates. Fees may vary at the dealership.</p>
             </div>
-            <button onclick="window.print()" class="print-button no-print">Print</button>
+            <div class="button-container no-print">
+                <button onclick="window.print()" class="print-button">Print</button>
+                <button onclick="window.location.href='https://www.carwisela.com'" class="cta-button">Save Time & Money with CarWise</button>
+            </div>
         `;
 
-        document.getElementById('result').innerHTML = resultHTML;
+        resultDiv.innerHTML = resultHTML;
+        resultDiv.classList.add('has-results');
     } catch (error) {
-        alert(error.message);
+        resultDiv.innerHTML = `<p class="error">${error.message}</p>`;
+        resultDiv.classList.add('has-results');
+    } finally {
+        hidePreloader();
     }
 }
 

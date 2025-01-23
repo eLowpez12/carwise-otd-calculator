@@ -56,247 +56,308 @@ const stateFees = {
     "AK": {
         docFee: 299,
         titleFee: 15,
-        registrationFee: 245
+        registrationFee: 245,
+        docFeeTaxable: false
     },
     "AL": {
         docFee: 489,
         titleFee: 18,
-        registrationFee: 393
+        registrationFee: 393,
+        docFeeTaxable: true
     },
     "AR": {
         docFee: 129,
         titleFee: 10,
-        registrationFee: 28
+        registrationFee: 28,
+        docFeeTaxable: true
     },
     "AZ": {
         docFee: 499,
         titleFee: 4,
-        registrationFee: 564
+        registrationFee: 564,
+        docFeeTaxable: false
     },
     "CA": {
         docFee: 85,
         titleFee: 25,
-        registrationFee: 524
+        registrationFee: 524,
+        docFeeTaxable: true
     },
     "CO": {
         docFee: 699,
         titleFee: 26,
-        registrationFee: 595
+        registrationFee: 595,
+        docFeeTaxable: true
     },
     "CT": {
         docFee: 599,
         titleFee: 25,
-        registrationFee: 180
+        registrationFee: 180,
+        docFeeTaxable: true
     },
     "DE": {
         docFee: 475,
         titleFee: 35,
-        registrationFee: 45
+        registrationFee: 45,
+        docFeeTaxable: false
     },
     "FL": {
         docFee: 999,
         titleFee: 75,
-        registrationFee: 297
+        registrationFee: 297,
+        docFeeTaxable: true
     },
     "GA": {
         docFee: 599,
         titleFee: 18,
-        registrationFee: 20
+        registrationFee: 20,
+        docFeeTaxable: false
     },
     "HI": {
         docFee: 395,
         titleFee: 5,
-        registrationFee: 78
+        registrationFee: 78,
+        docFeeTaxable: true
     },
     "ID": {
         docFee: 399,
         titleFee: 14,
-        registrationFee: 126
+        registrationFee: 126,
+        docFeeTaxable: true
     },
     "IL": {
         docFee: 347,
         titleFee: 155,
-        registrationFee: 151
+        registrationFee: 151,
+        docFeeTaxable: true
     },
     "IN": {
         docFee: 199,
         titleFee: 15,
-        registrationFee: 38
+        registrationFee: 38,
+        docFeeTaxable: true
     },
     "KS": {
         docFee: 499,
         titleFee: 10,
-        registrationFee: 80
+        registrationFee: 80,
+        docFeeTaxable: true
     },
     "KY": {
         docFee: 450,
         titleFee: 6,
-        registrationFee: 26
+        registrationFee: 26,
+        docFeeTaxable: true
     },
     "LA": {
         docFee: 425,
         titleFee: 77,
-        registrationFee: 64
+        registrationFee: 64,
+        docFeeTaxable: true
     },
     "MA": {
         docFee: 459,
         titleFee: 75,
-        registrationFee: 60
+        registrationFee: 60,
+        docFeeTaxable: true
     },
     "MD": {
         docFee: 499,
         titleFee: 100,
-        registrationFee: 187
+        registrationFee: 187,
+        docFeeTaxable: true
     },
     "ME": {
         docFee: 499,
         titleFee: 33,
-        registrationFee: 40
+        registrationFee: 40,
+        docFeeTaxable: true
     },
     "MI": {
         docFee: 260,
         titleFee: 15,
-        registrationFee: 128
+        registrationFee: 128,
+        docFeeTaxable: true
     },
     "MN": {
         docFee: 125,
         titleFee: 8,
-        registrationFee: 69
+        registrationFee: 69,
+        docFeeTaxable: false
     },
     "MO": {
         docFee: 565,
         titleFee: 12,
-        registrationFee: 57
+        registrationFee: 57,
+        docFeeTaxable: true
     },
     "MS": {
         docFee: 425,
         titleFee: 8,
-        registrationFee: 719
+        registrationFee: 719,
+        docFeeTaxable: true
     },
     "MT": {
         docFee: 299,
         titleFee: 12,
-        registrationFee: 237
+        registrationFee: 237,
+        docFeeTaxable: false
     },
     "NC": {
         docFee: 699,
         titleFee: 56,
-        registrationFee: 370
+        registrationFee: 370,
+        docFeeTaxable: true
     },
     "ND": {
         docFee: 299,
         titleFee: 5,
-        registrationFee: 123
+        registrationFee: 123,
+        docFeeTaxable: true
     },
     "NE": {
         docFee: 299,
         titleFee: 10,
-        registrationFee: 83
+        registrationFee: 83,
+        docFeeTaxable: true
     },
     "NH": {
         docFee: 375,
         titleFee: 25,
-        registrationFee: 51
+        registrationFee: 51,
+        docFeeTaxable: false
     },
     "NJ": {
         docFee: 695,
         titleFee: 60,
-        registrationFee: 271
+        registrationFee: 271,
+        docFeeTaxable: true
     },
     "NM": {
         docFee: 339,
         titleFee: 3,
-        registrationFee: 60
+        registrationFee: 60,
+        docFeeTaxable: true
     },
     "NV": {
         docFee: 499,
         titleFee: 28,
-        registrationFee: 49
+        registrationFee: 49,
+        docFeeTaxable: true
     },
     "NY": {
         docFee: 175,
         titleFee: 50,
-        registrationFee: 146
+        registrationFee: 146,
+        docFeeTaxable: true
     },
     "OH": {
         docFee: 250,
         titleFee: 15,
-        registrationFee: 31
+        registrationFee: 31,
+        docFeeTaxable: true
     },
     "OK": {
         docFee: 289,
         titleFee: 11,
-        registrationFee: 100
+        registrationFee: 100,
+        docFeeTaxable: true
     },
     "OR": {
         docFee: 250,
         titleFee: 106,
-        registrationFee: 169
+        registrationFee: 169,
+        docFeeTaxable: true
     },
     "PA": {
         docFee: 449,
         titleFee: 58,
-        registrationFee: 39
+        registrationFee: 39,
+        docFeeTaxable: false
     },
     "RI": {
         docFee: 399,
         titleFee: 53,
-        registrationFee: 58
+        registrationFee: 58,
+        docFeeTaxable: true
     },
     "SC": {
         docFee: 400,
         titleFee: 15,
-        registrationFee: 40
+        registrationFee: 40,
+        docFeeTaxable: true
     },
     "SD": {
         docFee: 200,
         titleFee: 10,
-        registrationFee: 122
+        registrationFee: 122,
+        docFeeTaxable: true
     },
     "TN": {
         docFee: 599,
         titleFee: 14,
-        registrationFee: 29
+        registrationFee: 29,
+        docFeeTaxable: true
     },
     "TX": {
         docFee: 150,
         titleFee: 33,
-        registrationFee: 74
+        registrationFee: 74,
+        docFeeTaxable: true
     },
     "UT": {
         docFee: 299,
         titleFee: 6,
-        registrationFee: 57
+        registrationFee: 57,
+        docFeeTaxable: true
     },
     "VA": {
         docFee: 799,
         titleFee: 15,
-        registrationFee: 36
+        registrationFee: 36,
+        docFeeTaxable: true
     },
     "VT": {
         docFee: 200,
         titleFee: 35,
-        registrationFee: 78
+        registrationFee: 78,
+        docFeeTaxable: true
     },
     "WA": {
         docFee: 199,
         titleFee: 15,
-        registrationFee: 73
+        registrationFee: 73,
+        docFeeTaxable: false
     },
     "WI": {
         docFee: 299,
         titleFee: 165,
-        registrationFee: 85
+        registrationFee: 85,
+        docFeeTaxable: false
     },
     "WV": {
         docFee: 299,
         titleFee: 15,
-        registrationFee: 52
+        registrationFee: 52,
+        docFeeTaxable: false
     },
     "WY": {
         docFee: 500,
         titleFee: 15,
-        registrationFee: 616
+        registrationFee: 616,
+        docFeeTaxable: true
+    },
+    "DC": {
+        docFee: 300,
+        titleFee: 26,
+        registrationFee: 185,
+        docFeeTaxable: true
+    },
+    "IA": {
+        docFee: 180,
+        titleFee: 25,
+        registrationFee: 333,
+        docFeeTaxable: false
     }
 };
 
