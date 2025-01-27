@@ -163,9 +163,13 @@ async function getFeesFromZipcode(zipcode) {
 
     // Get tax rates from API
     try {
+        // Decode API key at runtime
+        const encodedKey = 'Q05teDdDWndtRG00Y25Gc1BEV2tVdz09N2pBUDFkWDNGaHQwUXVraw==';
+        const apiKey = atob(encodedKey);
+        
         const response = await fetch(`https://api.api-ninjas.com/v1/salestax?zip_code=${zipcode}`, {
             headers: {
-                'X-Api-Key': 'CNmx7CZwmDm4cnFsPDWkUw==7jAP1dX3Fht0Qukk'
+                'X-Api-Key': apiKey
             }
         });
 
@@ -190,7 +194,8 @@ async function getFeesFromZipcode(zipcode) {
                 countyRate: parseFloat(taxData[0].county_rate) * 100,
                 additionalRate: parseFloat(taxData[0].additional_rate) * 100
             },
-            docFeeTaxable: fees.docFeeTaxable
+            docFeeTaxable: fees.docFeeTaxable,
+            tradeInTaxable: fees.tradeInTaxable
         };
     } catch (error) {
         console.error('Tax API Error:', error);
@@ -244,11 +249,13 @@ async function calculateTotal() {
         
         // Wait for both the fees calculation and minimum delay
         await Promise.all([minimumDelay, Promise.resolve(fees)]);
-        
-        const { docFee, titleFee, registrationFee, taxRate, state, docFeeTaxable } = fees;
 
-        // Calculate taxable amount based on whether doc fees are taxable in the state
-        const taxableAmount = sellingPrice - tradeAllowance + (docFeeTaxable ? docFee : 0);
+        const { docFee, titleFee, registrationFee, taxRate, state, docFeeTaxable, tradeInTaxable } = fees;
+
+        // Calculate taxable amount based on whether doc fees are taxable and trade-in is taxable in the state
+        const taxableAmount = tradeInTaxable ? 
+            sellingPrice + (docFeeTaxable ? docFee : 0) : // If trade-in is taxable (CA, HI, VA)
+            sellingPrice - tradeAllowance + (docFeeTaxable ? docFee : 0); // For all other states
         const salesTax = taxableAmount * (taxRate / 100);
         
         const totalBeforeTrade = sellingPrice + docFee + salesTax + titleFee + registrationFee;
@@ -267,7 +274,7 @@ async function calculateTotal() {
                     <span class="result-value">${formatCurrency(sellingPrice)}</span>
                 </div>
                 <div class="result-row">
-                    <span class="result-label">Trade Allowance</span>
+                    <span class="result-label">Trade Allowance${tradeInTaxable ? ' (Not Tax Deductible)' : ''}</span>
                     <span class="result-value">${formatCurrency(tradeAllowance)}</span>
                 </div>
                 <div class="result-row">
@@ -329,11 +336,11 @@ async function calculateTotal() {
                         </div>
                     ` : ''}
                 ` : ''}
-                <p class="disclaimer">The total out-the-door price and monthly payment are estimates. Fees may vary at the dealership.</p>
+                <p class="disclaimer">The total out-the-door price and monthly payment are estimates. Document fees and registration fees are based on state averages and may vary by dealership and other factors.</p>
             </div>
             <div class="button-container no-print">
                 <button onclick="window.print()" class="print-button">Print</button>
-                <button onclick="window.location.href='https://www.carwisela.com'" class="cta-button">Save Time & Money with CarWise</button>
+                <button onclick="window.location.href='https://www.carwisela.com/contact'" class="cta-button">Save Time & Money with CarWise</button>
             </div>
         `;
 
