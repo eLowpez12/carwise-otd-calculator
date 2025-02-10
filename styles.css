@@ -355,8 +355,8 @@ input[type="number"] {
 
 .tooltip {
     display: none;
-    position: fixed;
-    background: rgba(255, 255, 255, 0.98);
+    position: absolute;
+    background: white;
     border-radius: 8px;
     padding: 16px 20px;
     font-size: 14px;
@@ -367,56 +367,58 @@ input[type="number"] {
     line-height: 1.5;
     text-align: left;
     white-space: normal;
+    left: 50%;
+    bottom: calc(100% + 12px);
+    transform: translateX(-50%);
+    min-width: 200px;
+    max-width: 300px;
 }
 
-/* Mobile-first positioning */
+.tooltip::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -6px;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: white transparent transparent transparent;
+}
+
+/* Mobile enhancements */
 @media (max-width: 768px) {
     .tooltip {
-        left: 50% !important;
-        top: 50% !important;
-        transform: translate(-50%, -50%) !important;
-        width: 85%;
-        max-width: 320px;
-        margin: 0 auto;
-    }
-
-    .tooltip::before {
-        display: none; /* Hide arrow on mobile */
-    }
-
-    /* Add overlay background on mobile */
-    .tooltip::after {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: -1;
-    }
-}
-
-/* Desktop positioning */
-@media (min-width: 769px) {
-    .tooltip {
-        position: absolute;
-        left: 50%;
-        bottom: calc(100% + 12px);
-        transform: translateX(-50%);
+        width: auto;
         min-width: 200px;
-        max-width: 300px;
+        max-width: 280px;
+        /* Check if tooltip is too close to right edge */
+        right: auto;
+        /* Ensure tooltip stays within viewport */
+        left: 50%;
+        transform: translateX(-50%);
     }
 
-    .tooltip::before {
-        content: '';
-        position: absolute;
-        left: 50%;
-        bottom: -6px;
-        transform: translateX(-50%);
-        border-width: 6px;
-        border-style: solid;
-        border-color: white transparent transparent transparent;
+    /* Adjust position if tooltip would overflow screen */
+    .tooltip.adjust-left {
+        left: 0;
+        transform: translateX(0);
+    }
+
+    .tooltip.adjust-left::before {
+        left: 20px;
+        transform: translateX(0);
+    }
+
+    .tooltip.adjust-right {
+        left: auto;
+        right: 0;
+        transform: translateX(0);
+    }
+
+    .tooltip.adjust-right::before {
+        left: auto;
+        right: 20px;
+        transform: translateX(0);
     }
 }
 
@@ -427,24 +429,43 @@ input[type="number"] {
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translate(-50%, -48%);
+        transform: translate(-50%, 5px);
     }
     to {
         opacity: 1;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, 0);
     }
 }
 
-/* Desktop animation */
-@media (min-width: 769px) {
-    @keyframes fadeIn {
+/* Adjust animation for position-adjusted tooltips */
+@media (max-width: 768px) {
+    .tooltip.adjust-left {
+        animation: fadeInLeft 0.2s ease-in-out;
+    }
+
+    .tooltip.adjust-right {
+        animation: fadeInRight 0.2s ease-in-out;
+    }
+
+    @keyframes fadeInLeft {
         from {
             opacity: 0;
-            transform: translate(-50%, 5px);
+            transform: translateY(5px);
         }
         to {
             opacity: 1;
-            transform: translate(-50%, 0);
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInRight {
+        from {
+            opacity: 0;
+            transform: translateY(5px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
     }
 }

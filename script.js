@@ -129,7 +129,20 @@ document.addEventListener('DOMContentLoaded', function() {
             icon.closest('.form-group').appendChild(tooltip);
             
             // Show the tooltip
-            setTimeout(() => tooltip.classList.add('show'), 0);
+            setTimeout(() => {
+                // Check tooltip position and adjust if needed
+                const tooltipRect = tooltip.getBoundingClientRect();
+                const viewportWidth = window.innerWidth;
+                
+                if (tooltipRect.right > viewportWidth - 20) {
+                    tooltip.classList.add('adjust-right');
+                } else if (tooltipRect.left < 20) {
+                    tooltip.classList.add('adjust-left');
+                }
+                
+                tooltip.classList.add('show');
+            }, 0);
+            
             activeTooltip = tooltip;
         });
     });
